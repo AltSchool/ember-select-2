@@ -156,12 +156,24 @@ var Select2Component = Ember.Component.extend({
 
         self.sendAction('query', query, deferred);
 
-        deferred.promise.then(function(data) {
-          if (data instanceof Ember.ArrayProxy) {
-            data = data.toArray();
+        deferred.promise.then(function(result) {
+          var data = result;
+          var more = false;
+
+          if (result instanceof Ember.ArrayProxy) {
+            data = result.toArray();
+          } else if (!Array.isArray(result)) {
+            if (result.data instanceof Ember.ArrayProxy) {
+              data = result.data.toArray();
+            } else {
+              data = result.data;
+            }
+            more = result.more;
           }
+
           query.callback({
-            results: data
+            results: data,
+            more: more
           });
         }, function(reason) {
           query.callback({
@@ -434,7 +446,9 @@ var Select2Component = Ember.Component.extend({
     }
 
     this.set("value", value);
-    this.sendAction('didSelect');
+    Ember.run.schedule('actions', this, function() {
+      this.sendAction('didSelect', value, this);
+    });
   },
 
   /**
