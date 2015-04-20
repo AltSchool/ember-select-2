@@ -39,6 +39,7 @@ var Select2Component = Ember.Component.extend({
   optionDescriptionPath: 'description',
   placeholder: null,
   multiple: false,
+  closeOnSelect: true,
   allowClear: false,
   enabled: true,
   query: null,
@@ -74,6 +75,7 @@ var Select2Component = Ember.Component.extend({
     // setup
     options.placeholder = this.get('placeholder');
     options.multiple = this.get('multiple');
+    options.closeOnSelect = this.get('closeOnSelect');
     options.allowClear = this.get('allowClear');
     options.minimumResultsForSearch = this.get('searchEnabled') ? 0 : -1 ;
 
