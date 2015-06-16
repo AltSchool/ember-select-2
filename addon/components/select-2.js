@@ -38,6 +38,7 @@ var Select2Component = Ember.Component.extend({
   optionHeadlinePath: 'text',
   optionDescriptionPath: 'description',
   placeholder: null,
+  searchPlaceholder: null,
   multiple: false,
   closeOnSelect: true,
   allowClear: false,
@@ -373,6 +374,9 @@ var Select2Component = Ember.Component.extend({
       this.selectionChanged(data);
     }));
 
+    // add in the lower search placeholder if the value was provided (only on initialization)
+    if (this.get('searchPlaceholder')) { this.setSearchPlaceholder(); }
+
     this.addObserver('content.[]', this.valueChanged);
     this.addObserver('content.@each.' + optionLabelPath, this.valueChanged);
     this.addObserver('content.@each.' + optionHeadlinePath, this.valueChanged);
@@ -483,6 +487,12 @@ var Select2Component = Ember.Component.extend({
       // otherwise set the full object via "data"
       this._select.select2("data", value);
     }
+  },
+
+  setSearchPlaceholder: function() {
+    //we need to do .parent().find(..) because the select2-input search field is a sibling of this component,
+    //it is not actually nested in the component
+    this.$().parent().find('.select2-input').attr('placeholder', this.get('searchPlaceholder'));
   },
 
   /**
